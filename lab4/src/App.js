@@ -22,32 +22,36 @@ const endpoints = [
   "http://localhost:8080/dressings/",
 ];
 
-const fetchIngredients = async (endpoint, controller) => {
-  const ingredients = await safeFetchJson(endpoint, {
+const fetchCategory = async (endpoint, controller) => {
+  const categoryIngredients = await safeFetchJson(endpoint, {
     signal: controller.signal,
   });
 
   return Promise.all(
-    ingredients.map(async (ingredient) => {
+    categoryIngredients.map(async (ingredient) => {
       const ingredientRes = await safeFetchJson(`${endpoint}${ingredient}`, {
         signal: controller.signal,
       });
+
       return { [ingredient]: await ingredientRes };
     })
   );
 };
 
-const collectResponses = async (controller) => {
-  const responseArrays = await Promise.all(
-    endpoints.map((endpoint) => fetchIngredients(endpoint, controller))
+const fetchInventory = async (controller) => {
+  const categories = await Promise.all(
+    endpoints.map((endpoint) => fetchCategory(endpoint, controller))
   );
 
-  const ingredients = responseArrays.reduce((acc, cur) => {
-    const transformedIngredients = cur.reduce((acc, cur) => {
-      return { ...acc, ...cur };
-    }, {});
+  const ingredients = categories.reduce((accCategory, currCategory) => {
+    const transformedIngredients = currCategory.reduce(
+      (accIngredient, currIngredient) => {
+        return { ...accIngredient, ...currIngredient };
+      },
+      {}
+    );
 
-    return { ...acc, ...transformedIngredients };
+    return { ...accCategory, ...transformedIngredients };
   }, {});
 
   return ingredients;
@@ -63,8 +67,8 @@ const App = () => {
     const controller = new AbortController();
 
     const fetchData = async () => {
-      const results = await collectResponses(controller);
-      setInventory(results);
+      const inventory = await fetchInventory(controller);
+      setInventory(inventory);
     };
 
     fetchData();
