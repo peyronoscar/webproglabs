@@ -32,7 +32,7 @@ const OptionsComponent = ({
                 </option>
               ))}
             </select>
-            <div class="invalid-feedback">Please choose a username.</div>
+            <div className="invalid-feedback">Obligatoriskt</div>
           </label>
           {current ? (
             <Link
@@ -74,7 +74,7 @@ const OptionsComponent = ({
           </div>
           <div>
             {error ? (
-              <div class="alert alert-danger mt-3" role="alert">
+              <div className="alert alert-danger mt-3" role="alert">
                 Välj minst 3 och högst 9 tillbehör.
               </div>
             ) : null}
