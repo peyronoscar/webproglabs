@@ -14,9 +14,11 @@ import Spinner from "./components/Spinner";
 import Toast from "./components/Toast";
 import { Salad } from "./Salad";
 import { fetchInventory } from "./utils/inventory";
+import { safeFetchJson } from "./utils/safeFetchJson";
 
 const App = () => {
   const [order, setOrder] = useState([]);
+  const [ordered, setOrdered] = useState([]);
   const [inventory, setInventory] = useState(null);
   const [showToast, setShowToast] = useState(false);
 
@@ -32,10 +34,62 @@ const App = () => {
 
     setOrder(clientSalads);
 
+    const clientOrderedJson = JSON.parse(localStorage.getItem("ordered")) || [];
+    setOrdered(clientOrderedJson);
+
     return () => {
       controller.abort();
     };
   }, []);
+
+  const addToOrder = ({ foundation, protein, dressing, extras }) => {
+    const salad = new Salad({
+      ingredients: {
+        [foundation]: inventory[foundation],
+        [protein]: inventory[protein],
+        [dressing]: inventory[dressing],
+        ...extras,
+      },
+    });
+
+    const clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
+    clientSalads.push(salad);
+    localStorage.setItem("orders", JSON.stringify(clientSalads));
+
+    setOrder((oldState) => [...oldState, salad]);
+  };
+
+  const removeFromOrder = (uuid) => {
+    if (Array.isArray(uuid)) {
+      return uuid.forEach((id) => removeFromOrder(id));
+    }
+
+    setOrder((oldState) => oldState.filter((item) => item.uuid !== uuid));
+
+    const clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
+    localStorage.setItem(
+      "orders",
+      JSON.stringify(clientSalads.filter((salad) => salad.uuid !== uuid))
+    );
+  };
+
+  const buyOrder = async () => {
+    const confirmation = await safeFetchJson("http://localhost:8080/orders/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order.map((item) => Object.keys(item.ingredients))),
+    });
+
+    const clientOrders = JSON.parse(localStorage.getItem("ordered")) || [];
+    clientOrders.push(confirmation);
+    localStorage.setItem("ordered", JSON.stringify(clientOrders));
+
+    setOrdered((oldState) => [...oldState, confirmation]);
+
+    removeFromOrder(order.map((item) => item.uuid));
+  };
 
   return (
     <div className="container py-4">
@@ -52,7 +106,7 @@ const App = () => {
                 inventory ? (
                   <ComposeSalad
                     inventory={inventory}
-                    setOrder={setOrder}
+                    addToOrder={addToOrder}
                     setShowToast={setShowToast}
                   />
                 ) : (
@@ -62,7 +116,14 @@ const App = () => {
             />
             <Route
               path="/view-order"
-              element={<ViewOrder order={order} setOrder={setOrder} />}
+              element={
+                <ViewOrder
+                  order={order}
+                  ordered={ordered}
+                  buyOrder={buyOrder}
+                  removeFromOrder={removeFromOrder}
+                />
+              }
             />
             <Route
               path="/view-ingredient/:name"

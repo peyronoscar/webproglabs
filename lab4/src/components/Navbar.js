@@ -32,7 +32,7 @@ const Navbar = () => {
             }
             to="/view-order"
           >
-            Visa din beställning
+            Visa dina beställningar
           </NavLink>
         </li>
         <li className="nav-item">

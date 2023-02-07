@@ -1,11 +1,9 @@
 import { useMemo, useState } from "react";
-import { GourmetSalad } from "../Salad";
 import { useNavigate } from "react-router-dom";
-import { safeFetchJson } from "../utils/safeFetchJson";
 import SaladSelect from "./SaladSelect";
 import SaladCheckbox from "./SaladCheckbox";
 
-const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
+const ComposeSalad = ({ inventory, addToOrder, setShowToast }) => {
   const foundations = useMemo(
     () => Object.keys(inventory).filter((name) => inventory[name].foundation),
     [inventory]
@@ -75,29 +73,7 @@ const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
       {}
     );
 
-    const salad = new GourmetSalad({
-      ingredients: {
-        [foundation]: inventory[foundation],
-        [protein]: inventory[protein],
-        [dressing]: inventory[dressing],
-        ...formattedExtras,
-      },
-    });
-
-    // Do something with response?
-    await safeFetchJson("http://localhost:8080/orders/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([Object.keys(salad.ingredients)]),
-    });
-
-    const clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
-    clientSalads.push(salad);
-    localStorage.setItem("orders", JSON.stringify(clientSalads));
-
-    setOrder((oldState) => [...oldState, salad]);
+    addToOrder({ foundation, protein, dressing, formattedExtras });
 
     setFoundation("");
     setProtein("");

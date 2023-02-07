@@ -1,8 +1,16 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ViewIngredient = ({ inventory }) => {
   const { name } = useParams();
+  const navigate = useNavigate();
+
+  // If ingredient doesn't exists, send user to 404 page.
+  useEffect(() => {
+    if (!inventory[name]) navigate("/404");
+  }, [navigate, inventory, name]);
+
+  if (!inventory[name]) return null;
 
   return (
     <>
