@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
-import OptionsComponent from "./OptionsComponent";
 import { GourmetSalad } from "../Salad";
 import { useNavigate } from "react-router-dom";
 import { safeFetchJson } from "../utils/safeFetchJson";
+import SaladSelect from "./SaladSelect";
+import SaladCheckbox from "./SaladCheckbox";
 
 const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
   const foundations = useMemo(
@@ -120,21 +121,21 @@ const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
       <div className="col-12">
         <h1>Välj innehållet i din sallad</h1>
       </div>
-      <OptionsComponent
+      <SaladSelect
         options={foundations}
         name="foundation"
         onChange={handleSelectChange}
         current={foundation}
         required
       />
-      <OptionsComponent
+      <SaladSelect
         options={proteins}
         name="protein"
         onChange={handleSelectChange}
         current={protein}
         required
       />
-      <OptionsComponent
+      <SaladCheckbox
         options={extras}
         name="extra"
         onChange={handleCheckboxChange}
@@ -142,7 +143,7 @@ const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
         error={formError}
         checkbox
       />
-      <OptionsComponent
+      <SaladSelect
         options={dressings}
         name="dressing"
         onChange={handleSelectChange}

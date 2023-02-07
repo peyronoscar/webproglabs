@@ -5,7 +5,6 @@ const ViewOrder = ({ order, setOrder }) => {
     setOrder((oldState) => oldState.filter((item) => item.uuid !== uuid));
 
     const clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
-
     localStorage.setItem(
       "orders",
       JSON.stringify(clientSalads.filter((salad) => salad.uuid !== uuid))

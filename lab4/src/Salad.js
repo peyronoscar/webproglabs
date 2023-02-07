@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 
-class Salad {
+export class Salad {
   static instanceCounter = 0;
 
   constructor(arg) {

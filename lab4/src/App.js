@@ -11,51 +11,9 @@ import HomePage from "./components/HomePage";
 import NotFound from "./components/404";
 import ViewIngredient from "./components/ViewIngredient";
 import Spinner from "./components/Spinner";
-import { safeFetchJson } from "./utils/safeFetchJson";
 import Toast from "./components/Toast";
-import { GourmetSalad } from "./Salad";
-
-const endpoints = [
-  "http://localhost:8080/foundations/",
-  "http://localhost:8080/proteins/",
-  "http://localhost:8080/extras/",
-  "http://localhost:8080/dressings/",
-];
-
-const fetchCategory = async (endpoint, controller) => {
-  const categoryIngredients = await safeFetchJson(endpoint, {
-    signal: controller.signal,
-  });
-
-  return Promise.all(
-    categoryIngredients.map(async (ingredient) => {
-      const ingredientRes = await safeFetchJson(`${endpoint}${ingredient}`, {
-        signal: controller.signal,
-      });
-
-      return { [ingredient]: ingredientRes };
-    })
-  );
-};
-
-const fetchInventory = async (controller) => {
-  const categories = await Promise.all(
-    endpoints.map((endpoint) => fetchCategory(endpoint, controller))
-  );
-
-  const ingredients = categories.reduce((accCategory, currCategory) => {
-    const transformedIngredients = currCategory.reduce(
-      (accIngredient, currIngredient) => {
-        return { ...accIngredient, ...currIngredient };
-      },
-      {}
-    );
-
-    return { ...accCategory, ...transformedIngredients };
-  }, {});
-
-  return ingredients;
-};
+import { Salad } from "./Salad";
+import { fetchInventory } from "./utils/inventory";
 
 const App = () => {
   const [order, setOrder] = useState([]);
@@ -70,9 +28,7 @@ const App = () => {
 
     // Update orders from localStorage
     const clientSaladsJson = JSON.parse(localStorage.getItem("orders")) || [];
-    const clientSalads = clientSaladsJson.map(
-      (order) => new GourmetSalad(order)
-    );
+    const clientSalads = clientSaladsJson.map((order) => new Salad(order));
 
     setOrder(clientSalads);
 
