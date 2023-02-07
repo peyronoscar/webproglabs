@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 const ViewIngredient = ({ inventory }) => {
   const { name } = useParams();
 
-  console.log();
+  if (!inventory[name]) return;
 
   return (
     <>

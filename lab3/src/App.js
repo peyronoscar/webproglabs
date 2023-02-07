@@ -38,7 +38,7 @@ const App = () => {
               path="/view-ingredient/:name"
               element={<ViewIngredient inventory={inventory} />}
             />
-            <Route path="/*" element={<NotFound />} />
+            <Route path="/*" element={NotFound} />
           </Routes>
         </div>
       </main>
