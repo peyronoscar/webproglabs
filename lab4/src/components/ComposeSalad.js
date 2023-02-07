@@ -58,6 +58,7 @@ const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
   };
 
   const handleSubmit = async (e) => {
+    setFormError(false);
     e.preventDefault();
     e.target.classList.add("was-validated");
 
@@ -91,7 +92,7 @@ const ComposeSalad = ({ inventory, setOrder, setShowToast }) => {
       body: JSON.stringify([Object.keys(salad.ingredients)]),
     });
 
-    let clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
+    const clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
     clientSalads.push(salad);
     localStorage.setItem("orders", JSON.stringify(clientSalads));
 

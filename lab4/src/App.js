@@ -33,7 +33,7 @@ const fetchCategory = async (endpoint, controller) => {
         signal: controller.signal,
       });
 
-      return { [ingredient]: await ingredientRes };
+      return { [ingredient]: ingredientRes };
     })
   );
 };
@@ -66,15 +66,10 @@ const App = () => {
     // Fetch ingredients
     const controller = new AbortController();
 
-    const fetchData = async () => {
-      const inventory = await fetchInventory(controller);
-      setInventory(inventory);
-    };
-
-    fetchData();
+    fetchInventory(controller).then((inventory) => setInventory(inventory));
 
     // Update orders from localStorage
-    let clientSaladsJson = JSON.parse(localStorage.getItem("orders")) || [];
+    const clientSaladsJson = JSON.parse(localStorage.getItem("orders")) || [];
     const clientSalads = clientSaladsJson.map(
       (order) => new GourmetSalad(order)
     );

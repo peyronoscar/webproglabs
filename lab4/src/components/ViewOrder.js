@@ -4,7 +4,8 @@ const ViewOrder = ({ order, setOrder }) => {
   const handleClick = (uuid) => {
     setOrder((oldState) => oldState.filter((item) => item.uuid !== uuid));
 
-    let clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
+    const clientSalads = JSON.parse(localStorage.getItem("orders")) || [];
+
     localStorage.setItem(
       "orders",
       JSON.stringify(clientSalads.filter((salad) => salad.uuid !== uuid))

@@ -57,6 +57,7 @@ const ComposeSalad = ({ inventory, setOrder }) => {
   };
 
   const handleSubmit = (e) => {
+    setFormError(false);
     e.preventDefault();
     e.target.classList.add("was-validated");
 
