@@ -5,8 +5,6 @@ const ViewOrder = ({ order, ordered, removeFromOrder, buyOrder }) => {
     removeFromOrder(uuid);
   };
 
-  console.log(ordered);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 

@@ -31,9 +31,9 @@ const App = () => {
     // Update orders from localStorage
     const clientSaladsJson = JSON.parse(localStorage.getItem("orders")) || [];
     const clientSalads = clientSaladsJson.map((order) => new Salad(order));
-
     setOrder(clientSalads);
 
+    // Update ordered salads from localStorage
     const clientOrderedJson = JSON.parse(localStorage.getItem("ordered")) || [];
     setOrdered(clientOrderedJson);
 

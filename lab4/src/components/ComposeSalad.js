@@ -73,7 +73,7 @@ const ComposeSalad = ({ inventory, addToOrder, setShowToast }) => {
       {}
     );
 
-    addToOrder({ foundation, protein, dressing, formattedExtras });
+    addToOrder({ foundation, protein, dressing, extras: formattedExtras });
 
     setFoundation("");
     setProtein("");
